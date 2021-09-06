@@ -24,21 +24,34 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/', function(req, res, next) {
+router.post('/add', function(req, res, next) {
+
+  let randomNo = Math.floor(10000 + Math.random() * 10000) + 1;
 
   fs.readFile("toDo.json", (err, data) => {
     if(err) console.log('error', err);
 
-    const toDo = JSON.parse(data)
-    console.log('too', toDo );
-    const arr = [...toDo]
-    let result = arr.find(({date}) => date === req.body.date);
+    const arr = JSON.parse(data)
+    const toDo = [...arr]
+
+    let result = toDo.find(({date}) => date === req.body.date);
 
     if(result !== undefined) {
-      result.task.push(req.body.newTask)
-      //toDo = result;
+      result.item.push({
+        "task": req.body.item, 
+        "checked": false,
+        "id": randomNo
+      })
     } else {
-      toDo.push({"date": req.body.date, "task": [req.body.newTask]})
+      toDo.push
+      ({
+        "date": req.body.date, 
+        "item": [{
+          "task": req.body.item, 
+          "checked": false,
+          "id": randomNo
+        }]
+      })
     }
 
 
@@ -54,85 +67,24 @@ router.post('/', function(req, res, next) {
 
 
 
-//should prob be a post
-router.get('/add', function(req, res, next) {
+router.post('/checked', function(req, res, next) {
+
 
   fs.readFile("toDo.json", (err, data) => {
     if(err) console.log('error', err);
 
+    const arr = JSON.parse(data)
+    const toDo = [...arr]
 
-    const toDo = JSON.parse(data)
+    let dateOf = toDo.find(({date}) => date === req.body.date);
 
-    newToDo =  {"task": "clean", "task": "cook"};
+    let toDoItem = dateOf.item;
 
-    toDo.push(newToDo);
-
-    fs.writeFile("toDo.json", JSON.stringify(toDo, null, 2), (err) => {
-      if(err) console.log('error; ', err);
-    })
-    res.send(toDo)
-    return 
-
-  })
-
-});
-
-
-router.get('/json', function(req, res, next) {
-  fs.readFile("toDo.json", (err, data) => {
-    if(err) {
-      console.log('error', err);      
+    for (let task in toDoItem) {
+      if(toDoItem[task].id.toString() === req.body.item) {
+        toDoItem[task].checked = true;
+      }
     }
-
-    const toDo = JSON.parse(data)
-
-    res.send(toDo)
-    return 
-
-  })
-  let users = [
-    {
-      "date": "Wed Sep 29",
-      "task": [
-        "clean",
-        "shop",
-        "pay bills"
-      ]
-    },
-    {
-     "date": "Thu Sep 30",
-     "task": [
-       "run",
-       "sleep",
-       "cook"
-     ]
-   },
-   {
-    "date": "Sat Sep 04",
-    "task": [
-      "eat",
-      "dentist",
-      "clean"
-    ]
-  }
-   ];
-  res.json(users)
-//http://localhost:3010/users/json  fetcha address från frontend? 
-});
-
-
-router.post('/json', function(req, res, next) {
-  
-  fs.readFile("toDo.json", (err, data) => {
-    if(err) console.log('error', err);
-
-
-    const toDo = JSON.parse(data)
-
-    newToDo =  req.body;
-    console.log('newToDo', newToDo);
-    
-    toDo.push(newToDo);
 
     fs.writeFile("toDo.json", JSON.stringify(toDo, null, 2), (err) => {
       if(err) console.log('error; ', err);
@@ -143,6 +95,7 @@ router.post('/json', function(req, res, next) {
   });
 
 });
+
 
 
 module.exports = router;
