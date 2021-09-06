@@ -1,42 +1,34 @@
 [
   {
-    "date": "Mon Sep 06",
-    "item": [
-      {
-        "task": "dsa",
-        "checked": true,
-        "id": 18078
-      },
-      {
-        "task": "ahe",
-        "checked": false,
-        "id": 18099
-      },
-      {
-        "task": "ash",
-        "checked": false,
-        "id": 19726
-      },
-      {
-        "task": "hdj",
-        "checked": false,
-        "id": 17069
-      }
-    ]
+    "date": "Sat Sep 18",
+    "item": []
   },
   {
-    "date": "Wed Sep 08",
-    "item": [
-      {
-        "task": "senaste",
-        "checked": true,
-        "id": 13194
-      },
-      {
-        "task": "yeest",
-        "checked": false,
-        "id": 12388
-      }
-    ]
+    "date": "Wed Sep 15",
+    "item": []
+  },
+  {
+    "date": "Mon Sep 06",
+    "item": []
+  },
+  {
+    "date": "Thu Sep 23",
+    "item": []
+  },
+  {
+    "date": "Sun Sep 12",
+    "item": []
+  },
+  {
+    "date": "Thu Sep 09",
+    "item": []
+  },
+  {
+    "date": "Sat Sep 11",
+    "item": []
+  },
+  {
+    "date": "Sat Sep 25",
+    "item": []
   }
 ]

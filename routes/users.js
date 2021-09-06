@@ -14,8 +14,10 @@ router.get('/', function(req, res, next) {
       console.log('error', err);      
     }
 
-    const toDo = JSON.parse(data)
+      const toDo = JSON.parse(data)
+    
 
+console.log('toDo', toDo);
     res.send(toDo)
     return 
 
@@ -39,7 +41,6 @@ router.post('/add', function(req, res, next) {
     if(result !== undefined) {
       result.item.push({
         "task": req.body.item, 
-        "checked": false,
         "id": randomNo
       })
     } else {
@@ -48,7 +49,6 @@ router.post('/add', function(req, res, next) {
         "date": req.body.date, 
         "item": [{
           "task": req.body.item, 
-          "checked": false,
           "id": randomNo
         }]
       })
@@ -78,13 +78,15 @@ router.post('/checked', function(req, res, next) {
 
     let dateOf = toDo.find(({date}) => date === req.body.date);
 
-    let toDoItem = dateOf.item;
+    let index = dateOf.item.findIndex(item => item.id.toString() === req.body.item);
+    dateOf.item.splice(index, 1);
 
-    for (let task in toDoItem) {
-      if(toDoItem[task].id.toString() === req.body.item) {
-        toDoItem[task].checked = true;
-      }
+    if(dateOf.item.length <= 0) {
+
+      let i = toDo.findIndex(({date}) => date === req.body.date);
+      toDo.splice(i, 1);
     }
+
 
     fs.writeFile("toDo.json", JSON.stringify(toDo, null, 2), (err) => {
       if(err) console.log('error; ', err);
