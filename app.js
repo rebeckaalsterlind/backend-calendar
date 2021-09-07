@@ -8,6 +8,20 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+const MongoClient = require("mongodb").MongoClient;
+
+MongoClient.connect("mongodb+srv://alsterlind:8504143201@todo-calendar-react.kcq0f.mongodb.net/toDo-calendar-react?retryWrites=true&w=majority", {
+useUnifiedTopology: true
+})
+
+.then(client => {
+
+  console.log('Connected to database');
+  const db = client.db("toDo-calendar-react");
+  app.locals.db = db; 
+
+})
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

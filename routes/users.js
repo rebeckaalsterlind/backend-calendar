@@ -4,24 +4,25 @@ const cors = require("cors");
 router.use(cors());
 const fs = require("fs");
 
-let newToDo;
+//PROBLEM WITH PARSE IN GET! 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
 
-  fs.readFile("toDo.json", (err, data) => {
-    if(err) {
-      console.log('error', err);      
+/************ Database ***********/
+router.get('/', (req, res, next) => {
+
+  req.app.locals.db.collection("toDo").find().toArray()
+  .then(result => {
+    
+    const toDo = []
+
+    for (let i in result) {
+      toDo.push(result[i])
     }
 
-      const toDo = JSON.parse(data)
-    
-
-console.log('toDo', toDo);
     res.send(toDo)
-    return 
 
-  })
+  });
 
 });
 
@@ -30,40 +31,91 @@ router.post('/add', function(req, res, next) {
 
   let randomNo = Math.floor(10000 + Math.random() * 10000) + 1;
 
-  fs.readFile("toDo.json", (err, data) => {
-    if(err) console.log('error', err);
+  //look for selected date in database
+  req.app.locals.db.collection("toDo").find({"date": req.body.date}).toArray()
+  .then(result => {
 
-    const arr = JSON.parse(data)
-    const toDo = [...arr]
+    //if date not found => insert date with toDo
+    if(result[0] === undefined){
+    const add =  
+      {
+        "date": req.body.date,
+        "item": [
+          {
+            "task": req.body.item,
+            "id": randomNo
+          }
+        ]
+      }
 
-    let result = toDo.find(({date}) => date === req.body.date);
-
-    if(result !== undefined) {
-      result.item.push({
-        "task": req.body.item, 
-        "id": randomNo
-      })
+    req.app.locals.db.collection("toDo").insertOne(add);
+    
+    //if date allready exists => push toDo to date
     } else {
-      toDo.push
-      ({
-        "date": req.body.date, 
-        "item": [{
-          "task": req.body.item, 
-          "id": randomNo
-        }]
-      })
+
+      req.app.locals.db.collection("toDo").update( 
+        {"date": req.body.date},
+        {
+          $push: {
+            item: {
+              $each: [{"task": req.body.item, "id": randomNo}]
+            }
+          }
+        }
+      );
+
     }
 
+    res.send(test)
+  })
+})
 
-    fs.writeFile("toDo.json", JSON.stringify(toDo, null, 2), (err) => {
-      if(err) console.log('error; ', err);
-    })
 
-    res.json(toDo)
 
-  });
 
-});
+/************* Json file ***********/
+
+
+
+
+// router.post('/add', function(req, res, next) {
+
+//   let randomNo = Math.floor(10000 + Math.random() * 10000) + 1;
+
+//   fs.readFile("toDo.json", (err, data) => {
+//     if(err) console.log('error', err);
+
+//     const arr = JSON.parse(data)
+//     const toDo = [...arr]
+
+//     let result = toDo.find(({date}) => date === req.body.date);
+
+//     if(result !== undefined) {
+//       result.item.push({
+//         "task": req.body.item, 
+//         "id": randomNo
+//       })
+//     } else {
+//       toDo.push
+//       ({
+//         "date": req.body.date, 
+//         "item": [{
+//           "task": req.body.item, 
+//           "id": randomNo
+//         }]
+//       })
+//     }
+
+
+//     fs.writeFile("toDo.json", JSON.stringify(toDo, null, 2), (err) => {
+//       if(err) console.log('error; ', err);
+//     })
+
+//     res.json(toDo)
+
+//   });
+
+// });
 
 
 
