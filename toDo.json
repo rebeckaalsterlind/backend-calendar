@@ -3,7 +3,7 @@
     "date": "Thu Sep 09",
     "item": [
       {
-        "task": "fgdns",
+        "task": "shop",
         "id": "15858"
       }
     ]
@@ -12,8 +12,8 @@
     "date": "Tue Sep 28",
     "item": [
       {
-        "task": "saf",
-        "id": 12419
+        "task": "pay bills",
+        "id": "12419"
       }
     ]
   },
@@ -21,8 +21,8 @@
     "date": "Mon Sep 13",
     "item": [
       {
-        "task": "sdf",
-        "id": 11196
+        "task": "laundry",
+        "id": "11196"
       }
     ]
   }
