@@ -4,7 +4,6 @@ const cors = require("cors");
 router.use(cors());
 const fs = require("fs");
 
-//PROBLEM WITH PARSE IN GET! 
 
 /* GET users listing. */
 
@@ -30,6 +29,7 @@ router.get('/', (req, res, next) => {
 router.post('/add', function(req, res, next) {
 
   let randomNo = Math.floor(10000 + Math.random() * 10000) + 1;
+  let id = randomNo.toString();
 
   //look for selected date in database
   req.app.locals.db.collection("toDo").find({"date": req.body.date}).toArray()
@@ -37,19 +37,19 @@ router.post('/add', function(req, res, next) {
 
     //if date not found => insert date with toDo
     if(result[0] === undefined){
-    const add =  
+      const add =  
       {
         "date": req.body.date,
         "item": [
           {
             "task": req.body.item,
-            "id": randomNo.toString()
+            "id": id
           }
         ]
-      }
+      };
 
-    req.app.locals.db.collection("toDo").insertOne(add);
-    
+      req.app.locals.db.collection("toDo").insertOne(add);
+
     //if date allready exists => push toDo to date
     } else {
 
@@ -58,7 +58,7 @@ router.post('/add', function(req, res, next) {
         {
           $push: {
             item: {
-              $each: [{"task": req.body.item, "id": randomNo.toString()}]
+              $each: [{"task": req.body.item, "id": id}]
             }
           }
         }
@@ -66,31 +66,37 @@ router.post('/add', function(req, res, next) {
 
     }
 
-    res.send(test)
-  })
-})
+    res.send("")
+  });
+});
 
 
 router.post('/checked', function(req, res, next) {
-
 
   req.app.locals.db.collection("toDo").update(
     { },
     { $pull: { item: { task: req.body.item.task , id: req.body.item.id } } },
     { multi: true }
   )
-  .then(result => {
-    console.log('result', result);
-  })
+  .then(() => {
+    //check if date has any to-dos
+    req.app.locals.db.collection("toDo").find({"date": req.body.date}).toArray()
+    .then(result => {
+      //if not => delete date
+      if(result[0].item[0] === undefined) { 
+        req.app.locals.db.collection("toDo").deleteOne({"date" : req.body.date})
+      }
 
-  //find item empty and deleteOne
+    });
 
-    res.json("toDo")
-})
+  });
+
+  res.json("")
+   
+});
   
 
 
-  // req.app.locals.db.collection("toDo").updateOne( { "item": { "task": "första på 16", "id": req.body.item} } )
- 
+
 
 module.exports = router;
