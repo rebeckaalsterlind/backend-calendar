@@ -73,11 +73,10 @@ router.post('/add', function(req, res, next) {
 
 router.post('/checked', function(req, res, next) {
 
-  // req.app.locals.db.collection("toDo").updateOne( { "item": { "task": "första på 16", "id": req.body.item} } )
 
   req.app.locals.db.collection("toDo").update(
     { },
-    { $pull: { item: { task: "första på 16" , id: req.body.item } } },
+    { $pull: { item: { task: req.body.item.task , id: req.body.item.id } } },
     { multi: true }
   )
   .then(result => {
@@ -86,17 +85,12 @@ router.post('/checked', function(req, res, next) {
 
   //find item empty and deleteOne
 
-
-
     res.json("toDo")
 })
   
 
 
-
+  // req.app.locals.db.collection("toDo").updateOne( { "item": { "task": "första på 16", "id": req.body.item} } )
  
-
-
-
 
 module.exports = router;
