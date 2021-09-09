@@ -10,7 +10,7 @@ const fs = require("fs");
 /************ Database ***********/
 router.get('/', (req, res, next) => {
 
-  req.app.locals.db.collection("toDo").find().toArray()
+  req.app.locals.db.collection("toDo").find().sort({ "date" : 1}).toArray()
   .then(result => {
     
     const toDo = []
