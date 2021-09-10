@@ -4,10 +4,6 @@ const cors = require("cors");
 router.use(cors());
 const fs = require("fs");
 
-
-/* GET users listing. */
-
-/************ Database ***********/
 router.get('/', (req, res, next) => {
 
   req.app.locals.db.collection("toDo").find().sort({ "date" : 1}).toArray()
@@ -17,7 +13,7 @@ router.get('/', (req, res, next) => {
 
     for (let i in result) {
       toDo.push(result[i])
-    }
+    };
 
     res.send(toDo)
 
@@ -64,7 +60,7 @@ router.post('/add', function(req, res, next) {
         }
       );
 
-    }
+    };
 
     res.send("")
   });
@@ -85,7 +81,7 @@ router.post('/checked', function(req, res, next) {
       //if not => delete date
       if(result[0].item[0] === undefined) { 
         req.app.locals.db.collection("toDo").deleteOne({"date" : req.body.date})
-      }
+      };
 
     });
 
@@ -95,8 +91,4 @@ router.post('/checked', function(req, res, next) {
    
 });
   
-
-
-
-
 module.exports = router;
